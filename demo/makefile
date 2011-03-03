@@ -1,17 +1,15 @@
 SOURCEDIR=../source
 BUILDDIR=build
-IMPORTDIR=import
+IMPORTDIR:=import
 
-ifeq ($(DRAKE),)
-H=$(SOURCEDIR)/import.h
-RTSDIR=
-MFLAGS=
-LFLAGS=
-else
-H=$(IMPORTDIR)/import2.h $(IMPORTDIR)/import-drake.h $(IMPORTDIR)/import-lib.h
-RTSDIR=rts
-MFLAGS=--RTS=$(abspath $(RTSDIR)) -a
-LFLAGS=-largs -lc-gnat
+ifneq ($(DRAKE_RTSROOT),)
+HOST=$(shell gcc -dumpmachine)
+TARGET=$(HOST)
+DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)
+endif
+ifneq ($(DRAKE_RTSDIR),)
+IMPORTDIR:=
+MFLAGS=--RTS=$(abspath $(DRAKE_RTSDIR))
 endif
 
 CFLAGS=-gnata -gnatwa -gnatyy-3chbs
@@ -20,34 +18,17 @@ CFLAGS=-gnata -gnatwa -gnatyy-3chbs
 
 all: $(BUILDDIR)/test_gc
 
-$(BUILDDIR)/test_gc: test_gc.adb $(BUILDDIR) $(IMPORTDIR)/c.ads $(RTSDIR)
+$(BUILDDIR)/test_gc: test_gc.adb $(BUILDDIR) $(IMPORTDIR)
 	cd $(BUILDDIR) && gnatmake -g $(MFLAGS) -I../$(SOURCEDIR) -I../$(IMPORTDIR) $(CFLAGS) ../$< $(LFLAGS)
 
 $(BUILDDIR):
 	mkdir $(BUILDDIR)
 
-$(IMPORTDIR)/c.ads: $(H)
-	headmaster -p --to ada -gcc=$(dir $(shell which gnatmake))gcc -D $(IMPORTDIR) $<
-
-ifneq ($(DRAKE),)
-
-$(IMPORTDIR)/import2.h:
-	-mkdir $(IMPORTDIR)
-	echo \#include \"import-drake.h\" > $@
-	echo \#include \"import-lib.h\" >> $@
-
-$(IMPORTDIR)/import-drake.h: $(DRAKE)/import.h
-	ln -s $(abspath $<) $@
-
-$(IMPORTDIR)/import-lib.h: $(SOURCEDIR)/import.h
-	ln -s $(abspath $<) $@
-
-$(RTSDIR):
-	make -C $(DRAKE) RTSDIR=$(abspath $(RTSDIR)) IMPORTDIR=$(abspath $(IMPORTDIR))
-
+ifneq ($(IMPORTDIR),)
+$(IMPORTDIR): $(SOURCEDIR)/import.h
+	headmaster -p --to ada -gcc=$(dir $(shell which gnatmake))gcc -D $(IMPORTDIR) $+
 endif
 
 clean:
 	-rm -rf build
 	-rm -rf import
-	-rm -rf rts
