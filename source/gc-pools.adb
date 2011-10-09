@@ -10,8 +10,6 @@ package body GC.Pools is
 	use type System.Storage_Elements.Storage_Count;
 	use type C.size_t;
 	
-	-- local
-	
 	--  same as System.Finalization_Implementation.To_Finalizable_Ptr
 	function To_Finalizable_Ptr is new Ada.Unchecked_Conversion (
 		System.Address,
@@ -26,7 +24,7 @@ package body GC.Pools is
 			To_Finalizable_Ptr (System.Address (obj)).all);
 	end Finalize_Controlled;
 	
-	-- body
+	-- implementation
 	
 	overriding procedure Allocate (
 		Pool : in out GC_Storage_Pool;

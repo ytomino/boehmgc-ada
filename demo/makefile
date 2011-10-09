@@ -1,10 +1,25 @@
 SOURCEDIR=../source
-BUILDDIR=build
-IMPORTDIR:=import
 
-ifneq ($(DRAKE_RTSROOT),)
 HOST=$(shell gcc -dumpmachine)
 TARGET=$(HOST)
+
+ifeq ($(TARGET),$(HOST))
+GNATMAKE=gnatmake
+GCC=$(dir $(shell which $(GNATMAKE)))gcc
+BUILDDIR=build
+IMPORTDIR:=import
+else
+GNATMAKE=$(TARGET)-gnatmake
+GCC=$(TARGET)-gcc
+BUILDDIR=build-$(TARGET)
+IMPORTDIR:=import-$(TARGET)
+ifneq ($(findstring freebsd,$(TARGET)),)
+INCDIR=/usr/local/i686-pc-freebsd7/local/include
+LFLAGS=-L/usr/local/i686-pc-freebsd7/local/lib -lpthread
+endif
+endif
+
+ifneq ($(DRAKE_RTSROOT),)
 DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)
 endif
 ifneq ($(DRAKE_RTSDIR),)
@@ -14,21 +29,20 @@ endif
 
 CFLAGS=-gnata -gnatwa -gnatyy-3chbs
 
-.PHONY: all clean $(BUILDDIR)/test_gc
+.PHONY: all clean
 
-all: $(BUILDDIR)/test_gc
+all: $(BUILDDIR)/test_gc $(BUILDDIR)/version
 
-$(BUILDDIR)/test_gc: test_gc.adb $(BUILDDIR) $(IMPORTDIR)
-	cd $(BUILDDIR) && gnatmake -g $(MFLAGS) -I../$(SOURCEDIR) -I../$(IMPORTDIR) $(CFLAGS) ../$< $(LFLAGS)
+$(BUILDDIR)/%: %.adb $(BUILDDIR) $(IMPORTDIR) $(wildcard $(SOURCEDIR)/*)
+	cd $(BUILDDIR) && $(GNATMAKE) -g $(MFLAGS) -I../$(SOURCEDIR) -I../$(IMPORTDIR) $(CFLAGS) ../$< -largs $(LFLAGS)
 
 $(BUILDDIR):
 	mkdir $(BUILDDIR)
 
 ifneq ($(IMPORTDIR),)
 $(IMPORTDIR): $(SOURCEDIR)/import.h
-	headmaster -p --to ada -gcc=$(dir $(shell which gnatmake))gcc -D $(IMPORTDIR) $+
+	headmaster --to ada -gcc=$(GCC) $(addprefix -isystem ,$(INCDIR)) -p -D $(IMPORTDIR) $+
 endif
 
 clean:
-	-rm -rf build
-	-rm -rf import
+	-rm -rf build* import*
