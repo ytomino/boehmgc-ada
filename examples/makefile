@@ -8,14 +8,15 @@ GNATMAKE=gnatmake
 GCC=$(dir $(shell which $(GNATMAKE)))gcc
 BUILDDIR=build
 IMPORTDIR:=import
+LFLAGS=$(shell pkg-config --libs bdw-gc)
+HFLAGS=$(shell pkg-config --cflags-only-I bdw-gc)
 else
 GNATMAKE=$(TARGET)-gnatmake
 GCC=$(TARGET)-gcc
 BUILDDIR=build-$(TARGET)
 IMPORTDIR:=import-$(TARGET)
 ifneq ($(findstring freebsd,$(TARGET)),)
-INCDIR=/usr/local/i686-pc-freebsd7/local/include
-LFLAGS=-L/usr/local/i686-pc-freebsd7/local/lib -lpthread
+LFLAGS=-lgc -lpthread
 endif
 endif
 
@@ -41,7 +42,7 @@ $(BUILDDIR):
 
 ifneq ($(IMPORTDIR),)
 $(IMPORTDIR): $(SOURCEDIR)/import.h
-	headmaster --to ada -gcc=$(GCC) $(addprefix -isystem ,$(INCDIR)) -p -D $(IMPORTDIR) $+
+	headmaster --to ada -gcc=$(GCC) $(HFLAGS) -p -D $(IMPORTDIR) $+
 endif
 
 clean:
