@@ -98,13 +98,13 @@ package body Finalization is
 	
 	procedure After_Allocation (Storage_Address : in System.Address) is
 	begin
-		Allocating_Object := Storage_Address + SysFM.Header_Offset;
+		Allocating_Object := Storage_Address + SysFM.Header_Size;
 	end After_Allocation;
 	
 	procedure Finalize_Controlled (obj : C.void_ptr; cd : C.void_ptr) is
 		pragma Unreferenced (cd);
 		Obj_Addr : constant System.Address :=
-			System.Address (obj) + SysFM.Header_Offset;
+			System.Address (obj) + SysFM.Header_Size;
 		Do_Finalize : constant SysFM.Finalize_Address_Ptr :=
 			SysFM.Finalize_Address_Unprotected (Obj_Addr);
 	begin
