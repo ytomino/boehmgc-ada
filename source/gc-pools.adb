@@ -20,8 +20,8 @@ package body GC.Pools is
 		
 		procedure After_Allocation (Storage_Address : in System.Address);
 		
-		procedure Finalize_Controlled (obj : C.void_ptr; cd : C.void_ptr);
-		pragma Convention (C, Finalize_Controlled);
+		procedure Finalize_Controlled (obj : C.void_ptr; cd : C.void_ptr)
+			with Convention => C;
 		
 	end Finalization;
 	

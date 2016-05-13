@@ -3,8 +3,8 @@ package body GC is
 	use type C.unsigned_int;
 	
 	-- the version variable is not declared in header files
-	GC_version : C.unsigned_int;
-	pragma Import (C, GC_version, "GC_version");
+	GC_version : C.unsigned_int
+		with Import, Convention => C, External_Name => "GC_version";
 	
 	-- implementation
 	
