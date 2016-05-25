@@ -28,6 +28,7 @@ begin
 		for I in 1 .. 1000 loop
 			declare
 				Gomi : constant Dummy_Access := new Dummies.Dummy;
+				pragma Unreferenced (Gomi);
 			begin
 				null;
 			end;
