@@ -1,9 +1,7 @@
 SOURCEDIR=../source
 
-HOST=$(shell gcc -dumpmachine)
+HOST:=$(shell gcc -dumpmachine)
 TARGET=$(HOST)
-
-VERSION=$(shell gcc -dumpversion)
 
 BUILDDIR=$(TARGET).build
 
@@ -25,8 +23,8 @@ BFLAGS=-E
 LFLAGS=-ggdb
 
 ifeq ($(TARGET),$(HOST))
-LFLAGS=$(shell pkg-config --libs bdw-gc)
-HFLAGS=$(shell pkg-config --cflags-only-I bdw-gc)
+LFLAGS:=$(shell pkg-config --libs bdw-gc)
+HFLAGS:=$(shell pkg-config --cflags-only-I bdw-gc)
 else
 ifneq ($(findstring freebsd,$(TARGET)),)
 LFLAGS=-lgc -lpthread
@@ -34,6 +32,7 @@ endif
 endif
 
 ifneq ($(DRAKE_RTSROOT),)
+VERSION:=$(shell gcc -dumpversion)
 DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
 endif
 ifneq ($(DRAKE_RTSDIR),)
