@@ -2,7 +2,7 @@
 #include <gc/gc_typed.h>
 #include <sys/mman.h> /* mprotect */
 
-#if defined(__linux__)
+#if defined(__gnu_linux__)
 #if !__GLIBC_PREREQ(2, 18)
 #pragma for Ada "sys/mman.h" include "bits/mman.h"
 #else
