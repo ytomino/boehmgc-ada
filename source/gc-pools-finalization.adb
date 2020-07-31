@@ -12,9 +12,8 @@ package body Finalization is
 	
 	package SysFM renames System.Finalization_Masters; -- short name
 	
-	function To_FM_Node_Ptr is new Ada.Unchecked_Conversion (
-		System.Address,
-		SysFM.FM_Node_Ptr);
+	function To_FM_Node_Ptr is
+		new Ada.Unchecked_Conversion (System.Address, SysFM.FM_Node_Ptr);
 	
 	type Relative_Address is mod 2 ** 32;
 	
@@ -73,21 +72,25 @@ package body Finalization is
 		Result : C.signed_int;
 	begin
 		-- make code memory as writable
-		Result := C.sys.mman.mprotect (
-			C.void_ptr (System.Storage_Elements.To_Address (
-				System.Storage_Elements.To_Integer (Old_Target) and not (Page_Size - 1))),
-			C.size_t (Page_Size),
-			C.signed_int (C.unsigned_int'(
-				C.sys.mman.PROT_READ or C.sys.mman.PROT_WRITE or C.sys.mman.PROT_EXEC)));
+		Result :=
+			C.sys.mman.mprotect (
+				C.void_ptr (
+					System.Storage_Elements.To_Address (
+						System.Storage_Elements.To_Integer (Old_Target) and not (Page_Size - 1))),
+				C.size_t (Page_Size),
+				C.signed_int (
+					C.unsigned_int'(
+						C.sys.mman.PROT_READ or C.sys.mman.PROT_WRITE or C.sys.mman.PROT_EXEC)));
 		pragma Assert (Result = 0);
 		-- save
 		Old_Instruction := jmp;
 		-- make jmp instruction
 		jmp.Code := 16#e9#;
-		jmp.Data := Relative_Address'Mod (
-			System.Storage_Elements.To_Integer (New_Target)
-			- System.Storage_Elements.To_Integer (Old_Target)
-			- System.Storage_Elements.Integer_Address (jmp_Rec_Size));
+		jmp.Data :=
+			Relative_Address'Mod (
+				System.Storage_Elements.To_Integer (New_Target)
+					- System.Storage_Elements.To_Integer (Old_Target)
+					- System.Storage_Elements.Integer_Address (jmp_Rec_Size));
 	end Initialize;
 	
 	function Controlled_Size_In_Storage_Elements
@@ -103,16 +106,15 @@ package body Finalization is
 	
 	procedure Finalize_Controlled (obj : C.void_ptr; cd : C.void_ptr) is
 		pragma Unreferenced (cd);
-		Obj_Addr : constant System.Address :=
-			System.Address (obj) + SysFM.Header_Size;
+		Obj_Addr : constant System.Address := System.Address (obj) + SysFM.Header_Size;
 		Do_Finalize : constant SysFM.Finalize_Address_Ptr :=
 			SysFM.Finalize_Address_Unprotected (Obj_Addr);
 	begin
 		SysFM.Detach (To_FM_Node_Ptr (System.Address (obj)));
-		pragma Assert (Do_Finalize /= null,
-			"Finalize_Address_Unprotected ("
-			& System.Address_Image (Obj_Addr)
-			& ") = null");
+		pragma Assert (
+			Do_Finalize /= null,
+			"Finalize_Address_Unprotected (" & System.Address_Image (Obj_Addr)
+				& ") = null");
 		Do_Finalize.all (Obj_Addr);
 		SysFM.Delete_Finalize_Address_Unprotected (Obj_Addr);
 	end Finalize_Controlled;

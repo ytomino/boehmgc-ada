@@ -37,8 +37,8 @@ package body GC.Pools is
 	is
 		pragma Unreferenced (Pool);
 	begin
-		Storage_Address := System.Address (
-			C.gc.gc.GC_malloc (C.size_t (Size_In_Storage_Elements)));
+		Storage_Address :=
+			System.Address (C.gc.gc.GC_malloc (C.size_t (Size_In_Storage_Elements)));
 		if Storage_Address = System.Null_Address
 			or else (Alignment > 1 and then Storage_Address mod Alignment /= 0)
 		then
@@ -80,29 +80,28 @@ package body GC.Pools is
 			Finalization.Initialize;
 		end if;
 		declare
-			Words : constant C.size_t := C.size_t (
-				(Size_In_Storage_Elements * System.Storage_Unit + System.Word_Size - 1)
-				/ System.Word_Size);
-			Controlled_Words : constant C.size_t := C.size_t (
-				Finalization.Controlled_Size_In_Storage_Elements);
+			Words : constant C.size_t :=
+				C.size_t (
+					(Size_In_Storage_Elements * System.Storage_Unit + System.Word_Size - 1)
+						/ System.Word_Size);
+			Controlled_Words : constant C.size_t :=
+				C.size_t (Finalization.Controlled_Size_In_Storage_Elements);
 			type Bits_Array is array (1 .. Words) of Boolean;
 			pragma Pack (Bits_Array);
 			type Bits_Array_Access is access all Bits_Array;
-			function To_GC_bitmap is new Ada.Unchecked_Conversion (
-				Bits_Array_Access,
-				C.gc.gc_typed.GC_bitmap);
+			function To_GC_bitmap is
+				new Ada.Unchecked_Conversion (Bits_Array_Access, C.gc.gc_typed.GC_bitmap);
 			Bitmap : aliased Bits_Array;
 			Desc : C.gc.gc_typed.GC_descr;
 		begin
 			Bitmap (1 .. Controlled_Words) := (others => False);
 			Bitmap (Controlled_Words + 1 .. Words) := (others => True);
-			Desc := C.gc.gc_typed.GC_make_descriptor (
-				To_GC_bitmap (Bitmap'Access),
-				Words);
-			Storage_Address := System.Address (
-				C.gc.gc_typed.GC_malloc_explicitly_typed (
-					C.size_t (Size_In_Storage_Elements),
-					Desc));
+			Desc := C.gc.gc_typed.GC_make_descriptor (To_GC_bitmap (Bitmap'Access), Words);
+			Storage_Address :=
+				System.Address (
+					C.gc.gc_typed.GC_malloc_explicitly_typed (
+						C.size_t (Size_In_Storage_Elements),
+						Desc));
 			if Storage_Address = System.Null_Address
 				or else (Alignment > 1 and then Storage_Address mod Alignment /= 0)
 			then
