@@ -6,11 +6,13 @@ What's this?
 
 Ada binding to the Boehm-Demers-Weiser conservative garbage collector.
 
-Depending tools and libraries
------------------------------
+Prerequisites
+-------------
 
-Boehm GC
- http://www.hpl.hp.com/personal/Hans_Boehm/gc/
+GCC >= 4.7
+ https://gcc.gnu.org/
+Boehm GC >= 6.8
+ http://www.hboehm.info/gc/
 headmaster
  http://github.com/ytomino/headmaster
 
