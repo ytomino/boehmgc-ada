@@ -110,7 +110,7 @@ package body Finalization is
 		Do_Finalize : constant SysFM.Finalize_Address_Ptr :=
 			SysFM.Finalize_Address_Unprotected (Obj_Addr);
 	begin
-		SysFM.Detach (To_FM_Node_Ptr (System.Address (obj)));
+		SysFM.Detach_Unprotected (To_FM_Node_Ptr (System.Address (obj)));
 		pragma Assert (
 			Do_Finalize /= null,
 			"Finalize_Address_Unprotected (" & System.Address_Image (Obj_Addr)
