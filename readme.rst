@@ -30,6 +30,11 @@ Usage
    
    Or please write .gpr file for your environment.
 
+Limitations
+-----------
+
+Multithreading is unsupported.
+
 License
 -------
 
