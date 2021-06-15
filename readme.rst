@@ -19,16 +19,37 @@ headmaster
 Usage
 -----
 
-1. Translate the C headers with headmaster. ::
-   
-    $ headmaster --to ada -p -D import-dir boehmgc-ada/source/import.h
+1. Prepare the translated headers.
+
+   A. Translate the C headers with headmaster. ::
+
+       $ headmaster --to ada -p -D import-dir boehmgc-ada/source/import.h
+      
+      However, it may not work well in your environment.
+      The plan B is recommended.
+
+   B. Download them from `pre-translated headers page`_.
 
 2. Add the source directories of boehmgc-ada and the translated headers
    to search path for gnatmake. ::
-   
+
     $ gnatmake -Iboehmgc-ada/source -Iimport-dir your_main.adb
    
    Or please write .gpr file for your environment.
+
+Build examples
+--------------
+
+1. Link the translated headers to `examples/import`. ::
+
+    $ mkdir -p examples/import/$(gcc -dumpmachine)
+    $ ln -s import-dir examples/import/$(gcc -dumpmachine)
+   
+   If this step is omitted, headmaster will be used.
+
+2. Build them. ::
+
+    $ make -C examples
 
 Limitations
 -----------
@@ -96,3 +117,5 @@ Also, please apply the license of Boehm GC when static linking.
  are GPL'ed, but with an exception that should cover all uses in the
  collector.  (If you are concerned about such things, I recommend you look
  at the notice in config.guess or ltmain.sh.)
+
+.. _`pre-translated headers page`: https://github.com/ytomino/boehmgc-ada/wiki/Pre-translated-headers
