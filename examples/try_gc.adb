@@ -1,7 +1,7 @@
 with Ada.Text_IO;
 with System.Storage_Elements;
 with GC.Pools;
-procedure test_gc is
+procedure try_gc is
 	type Integer_Access is access Integer;
 	for Integer_Access'Storage_Pool use GC.Pools.Pool;
 begin
@@ -16,4 +16,4 @@ begin
 		Ada.Text_IO.Put_Line (
 			System.Storage_Elements.Storage_Count'Image (GC.Heap_Size));
 	end loop;
-end test_gc;
+end try_gc;

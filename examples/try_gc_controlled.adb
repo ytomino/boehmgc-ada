@@ -3,7 +3,7 @@ with Ada.Text_IO;
 with System.Address_Image;
 with System.Storage_Elements;
 with GC.Pools;
-procedure test_controlled is
+procedure try_gc_controlled is
 	package Dummies is
 		type Dummy is new Ada.Finalization.Controlled with null record;
 		overriding procedure Initialize (Object : in out Dummy);
@@ -36,4 +36,4 @@ begin
 		Ada.Text_IO.Put_Line (
 			System.Storage_Elements.Storage_Count'Image (GC.Heap_Size));
 	end loop;
-end test_controlled;
+end try_gc_controlled;
