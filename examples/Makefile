@@ -36,7 +36,7 @@ LFLAGS+=$(GC_LFLAGS)
 HFLAGS+=$(GC_HFLAGS)
 else
 ifneq ($(findstring freebsd,$(TARGET)),)
-LFLAGS=-lgc -lpthread
+LFLAGS+=-lgc -lpthread
 endif
 endif
 
