@@ -21,10 +21,19 @@ CFLAGS=-ggdb -pipe -gnatef -gnata -gnatwa -gnatyy-3cbhms \
 MFLAGS=-D $(BUILDDIR) -gnatA
 BFLAGS=-E
 LFLAGS=-ggdb
+HFLAGS=
 
 ifeq ($(TARGET),$(HOST))
-LFLAGS:=$(shell pkg-config --libs bdw-gc)
-HFLAGS:=$(shell pkg-config --cflags-only-I bdw-gc)
+WITH_GC?=
+ifneq ($(WITH_GC),)
+GC_LFLAGS=-L$(WITH_GC)/lib
+GC_HFLAGS=-I$(WITH_GC)/include
+else
+GC_LFLAGS:=$(shell pkg-config --libs bdw-gc)
+GC_HFLAGS:=$(shell pkg-config --cflags-only-I bdw-gc)
+endif
+LFLAGS+=$(GC_LFLAGS)
+HFLAGS+=$(GC_HFLAGS)
 else
 ifneq ($(findstring freebsd,$(TARGET)),)
 LFLAGS=-lgc -lpthread
