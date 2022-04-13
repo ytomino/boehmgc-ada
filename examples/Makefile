@@ -29,7 +29,7 @@ ifneq ($(WITH_GC),)
 GC_LFLAGS=-L$(WITH_GC)/lib
 GC_HFLAGS=-I$(WITH_GC)/include
 else
-GC_LFLAGS:=$(shell pkg-config --libs bdw-gc)
+GC_LFLAGS:=$(shell pkg-config --libs-only-L bdw-gc)
 GC_HFLAGS:=$(shell pkg-config --cflags-only-I bdw-gc)
 endif
 LFLAGS+=$(GC_LFLAGS)
