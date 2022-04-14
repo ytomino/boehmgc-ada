@@ -6,11 +6,11 @@ TARGET=$(HOST)
 BUILDDIR=$(TARGET).noindex
 
 ifeq ($(TARGET),$(HOST))
-GCCPREFIX=
-BINLN=bin
+ GCCPREFIX=
+ BINLN=bin
 else
-GCCPREFIX=$(TARGET)-
-BINLN=
+ GCCPREFIX=$(TARGET)-
+ BINLN=
 endif
 GCCSUFFIX=
 GCC=$(GCCPREFIX)gcc$(GCCSUFFIX)
@@ -24,43 +24,43 @@ LFLAGS=-ggdb
 HFLAGS=
 
 ifeq ($(TARGET),$(HOST))
-WITH_GC?=
-ifneq ($(WITH_GC),)
-GC_LFLAGS=-L$(WITH_GC)/lib
-GC_HFLAGS=-I$(WITH_GC)/include
+ WITH_GC?=
+ ifneq ($(WITH_GC),)
+  GC_LFLAGS=-L$(WITH_GC)/lib
+  GC_HFLAGS=-I$(WITH_GC)/include
+ else
+  GC_LFLAGS:=$(shell pkg-config --libs-only-L bdw-gc)
+  GC_HFLAGS:=$(shell pkg-config --cflags-only-I bdw-gc)
+ endif
+ LFLAGS+=$(GC_LFLAGS)
+ HFLAGS+=$(GC_HFLAGS)
 else
-GC_LFLAGS:=$(shell pkg-config --libs-only-L bdw-gc)
-GC_HFLAGS:=$(shell pkg-config --cflags-only-I bdw-gc)
-endif
-LFLAGS+=$(GC_LFLAGS)
-HFLAGS+=$(GC_HFLAGS)
-else
-ifneq ($(findstring freebsd,$(TARGET)),)
-LFLAGS+=-lgc -lpthread
-endif
+ ifneq ($(findstring freebsd,$(TARGET)),)
+  LFLAGS+=-lgc -lpthread
+ endif
 endif
 
 ifneq ($(DRAKE_RTSROOT),)
-VERSION:=$(shell $(GCC) -dumpversion)
-DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
+ VERSION:=$(shell $(GCC) -dumpversion)
+ DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
 endif
 ifneq ($(DRAKE_RTSDIR),)
-IMPORTDIR=
-GFLAGS+=--RTS=$(abspath $(DRAKE_RTSDIR))
+ IMPORTDIR=
+ GFLAGS+=--RTS=$(abspath $(DRAKE_RTSDIR))
 else
-ifneq ($(wildcard import/$(TARGET)),)
-IMPORTDIR=import/$(TARGET)
-else
-IMPORTDIR=$(BUILDDIR)/import
-endif
-MFLAGS+=-I$(IMPORTDIR)
+ ifneq ($(wildcard import/$(TARGET)),)
+  IMPORTDIR=import/$(TARGET)
+ else
+  IMPORTDIR=$(BUILDDIR)/import
+ endif
+ MFLAGS+=-I$(IMPORTDIR)
 endif
 
 ifneq ($(GCC),gcc)
-GFLAGS+=$(filter -m32 -m64,$(GCC))
-MFLAGS+=--GCC="$(GCC)"
-LFLAGS+=--GCC="$(GCC)"
-HFLAGS+=-gcc="$(GCC)"
+ GFLAGS+=$(filter -m32 -m64,$(GCC))
+ MFLAGS+=--GCC="$(GCC)"
+ LFLAGS+=--GCC="$(GCC)"
+ HFLAGS+=-gcc="$(GCC)"
 endif
 
 EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
