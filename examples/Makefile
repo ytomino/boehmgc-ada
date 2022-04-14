@@ -5,12 +5,12 @@ TARGET=$(HOST)
 
 BUILDDIR=$(TARGET).noindex
 
-ifeq ($(TARGET),$(HOST))
- GCCPREFIX=
- BINLN=bin
-else
+ifneq ($(TARGET),$(HOST))
  GCCPREFIX=$(TARGET)-
  BINLN=
+else
+ GCCPREFIX=
+ BINLN=bin
 endif
 GCCSUFFIX=
 GCC=$(GCCPREFIX)gcc$(GCCSUFFIX)
@@ -23,7 +23,11 @@ BFLAGS=-E
 LFLAGS=-ggdb
 HFLAGS=
 
-ifeq ($(TARGET),$(HOST))
+ifneq ($(TARGET),$(HOST))
+ ifneq ($(findstring freebsd,$(TARGET)),)
+  LFLAGS+=-lgc -lpthread
+ endif
+else
  WITH_GC?=
  ifneq ($(WITH_GC),)
   GC_LFLAGS=-L$(WITH_GC)/lib
@@ -34,10 +38,6 @@ ifeq ($(TARGET),$(HOST))
  endif
  LFLAGS+=$(GC_LFLAGS)
  HFLAGS+=$(GC_HFLAGS)
-else
- ifneq ($(findstring freebsd,$(TARGET)),)
-  LFLAGS+=-lgc -lpthread
- endif
 endif
 
 ifneq ($(DRAKE_RTSROOT),)
