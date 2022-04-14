@@ -15,27 +15,25 @@ endif
 GCCSUFFIX=
 GCC=$(GCCPREFIX)gcc$(GCCSUFFIX)
 
-GFLAGS=
-CFLAGS=-ggdb -pipe -gnatef -gnata -gnatwa -gnatyy-3cbhms
-MFLAGS=-D $(BUILDDIR) -gnatA $(addprefix -gnatec=,$(wildcard *.adc))
-BFLAGS=-E
-LFLAGS=-ggdb
+CFLAGS=-ggdb -pipe
+CFLAGS_ADA=-gnata -gnatef -gnatwa -gnatyy-3bchms
+LDFLAGS=-ggdb
 HFLAGS=
 
 ifneq ($(TARGET),$(HOST))
  ifneq ($(findstring freebsd,$(TARGET)),)
-  LFLAGS+=-lgc -lpthread
+  LDFLAGS+=-lgc -lpthread
  endif
 else
  WITH_GC?=
  ifneq ($(WITH_GC),)
-  GC_LFLAGS=-L$(WITH_GC)/lib
+  GC_LDFLAGS=-L$(WITH_GC)/lib
   GC_HFLAGS=-I$(WITH_GC)/include
  else
-  GC_LFLAGS:=$(shell pkg-config --libs-only-L bdw-gc)
+  GC_LDFLAGS:=$(shell pkg-config --libs-only-L bdw-gc)
   GC_HFLAGS:=$(shell pkg-config --cflags-only-I bdw-gc)
  endif
- LFLAGS+=$(GC_LFLAGS)
+ LDFLAGS+=$(GC_LDFLAGS)
  HFLAGS+=$(GC_HFLAGS)
 endif
 
@@ -45,21 +43,26 @@ ifneq ($(DRAKE_RTSROOT),)
 endif
 ifneq ($(DRAKE_RTSDIR),)
  IMPORTDIR=
- GFLAGS+=--RTS=$(abspath $(DRAKE_RTSDIR))
 else
  ifneq ($(wildcard import/$(TARGET)),)
   IMPORTDIR=import/$(TARGET)
  else
   IMPORTDIR=$(BUILDDIR)/import
  endif
- MFLAGS+=-I$(IMPORTDIR)
 endif
 
+GARGS=$(addprefix --RTS=,$(abspath $(DRAKE_RTSDIR)))
+MARGS=-D $(BUILDDIR) -gnatA $(addprefix -gnatec=,$(wildcard *.adc)) \
+      $(addprefix -I,$(IMPORTDIR))
+CARGS=$(CFLAGS) $(CFLAGS_ADA)
+BARGS=-E
+LARGS=$(LDFLAGS)
+
 ifneq ($(GCC),gcc)
- GFLAGS+=$(filter -m32 -m64,$(GCC))
- MFLAGS+=--GCC="$(GCC)"
- LFLAGS+=--GCC="$(GCC)"
  HFLAGS+=-gcc="$(GCC)"
+ GARGS+=$(filter -m32 -m64,$(GCC))
+ MARGS+=--GCC="$(GCC)"
+ LARGS+=--GCC="$(GCC)"
 endif
 
 EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
@@ -69,9 +72,12 @@ EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 all: $(EXAMPLES)
 
 $(BUILDDIR)/%: %.adb $(wildcard $(SOURCEDIR)/*) | $(BUILDDIR) $(IMPORTDIR)
-	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c -I$(SOURCEDIR) $< $(GFLAGS) $(MFLAGS) -cargs $(CFLAGS)
-	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) $(basename $(notdir $<)).ali $(GFLAGS) $(BFLAGS)
-	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ $(basename $(notdir $<)).ali $(GFLAGS) $(LFLAGS)
+	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c -I$(SOURCEDIR) $< $(GARGS) $(MARGS) \
+		-cargs $(CARGS)
+	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) \
+		$(basename $(notdir $<)).ali $(GARGS) $(BARGS)
+	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ \
+		$(basename $(notdir $<)).ali $(GARGS) $(LARGS)
 
 $(BUILDDIR):
 	mkdir $(BUILDDIR)
