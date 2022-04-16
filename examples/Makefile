@@ -56,7 +56,7 @@ endif
 
 GARGS=$(addprefix --RTS=,$(abspath $(DRAKE_RTSDIR)))
 MARGS=-D $(BUILDDIR) -gnatA $(addprefix -gnatec=,$(wildcard *.adc)) \
-      $(addprefix -I,$(IMPORTDIR))
+      $(addprefix -I,$(IMPORTDIR) $(SOURCEDIR))
 CARGS=$(CFLAGS) $(CFLAGS_ADA)
 BARGS=-E -x
 LARGS=$(LDFLAGS)
@@ -75,8 +75,7 @@ EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 all: $(EXAMPLES)
 
 $(BUILDDIR)/%: %.adb $(wildcard $(SOURCEDIR)/*) | $(BUILDDIR) $(IMPORTDIR)
-	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c -I$(SOURCEDIR) $< $(GARGS) $(MARGS) \
-		-cargs $(CARGS)
+	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c $< $(GARGS) $(MARGS) -cargs $(CARGS)
 	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) \
 		$(basename $(notdir $<)).ali $(GARGS) $(BARGS)
 	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ \
