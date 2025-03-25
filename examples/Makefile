@@ -37,14 +37,8 @@ else
  HFLAGS+=$(GC_HFLAGS)
 endif
 
-ifneq ($(DRAKE_RTSROOT),)
- VERSION:=$(shell $(GCC) -dumpversion)
- DRAKE_RTSDIR=$(DRAKE_RTSROOT)/$(TARGET)/$(VERSION)
- ifneq ($(wildcard $(DRAKE_RTSDIR)/debug),)
-  DRAKE_RTSDIR:=$(DRAKE_RTSDIR)/debug
- endif
-endif
-ifneq ($(DRAKE_RTSDIR),)
+RTSDIR?=
+ifneq ($(RTSDIR),)
  IMPORTDIR=
 else
  ifneq ($(wildcard import/$(TARGET)),)
@@ -54,7 +48,7 @@ else
  endif
 endif
 
-GARGS=$(addprefix --RTS=,$(abspath $(DRAKE_RTSDIR)))
+GARGS=$(addprefix --RTS=,$(abspath $(RTSDIR)))
 MARGS=-D $(BUILDDIR) -gnatA $(addprefix -gnatec=,$(wildcard *.adc)) \
       $(addprefix -I,$(IMPORTDIR) $(SOURCEDIR))
 CARGS=$(CFLAGS) $(CFLAGS_ADA)
