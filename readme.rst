@@ -4,14 +4,14 @@ Boehm GC interface library for gcc-Ada (GNAT)
 What's this?
 ------------
 
-Ada binding to the Boehm-Demers-Weiser conservative garbage collector.
+Ada binding to the Boehm-Demers-Weiser Garbage Collector.
 
 Prerequisites
 -------------
 
 GCC >= 4.7
  https://gcc.gnu.org/
-Boehm GC >= 7.2
+Boehm-Demers-Weiser Garbage Collector >= 7.2
  http://www.hboehm.info/gc/
 headmaster
  http://github.com/ytomino/headmaster
@@ -60,7 +60,8 @@ License
 -------
 
 It is licensed under the New BSD License, see below.
-Also, please apply the license of Boehm GC when static linking.
+Also, please apply the license of Boehm-Demers-Weiser Garbage Collector when
+static linking.
 
 **license of boehmgc-ada** ::
 
@@ -86,36 +87,40 @@ Also, please apply the license of Boehm GC when static linking.
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-**license of Boehm GC** ::
+**license of Boehm-Demers-Weiser Garbage Collector** ::
 
- Copyright (c) 1988, 1989 Hans-J. Boehm, Alan J. Demers
+ MIT-style License
+ 
+ Copyright (c) 1988-1989 Hans-J. Boehm, Alan J. Demers
  Copyright (c) 1991-1996 by Xerox Corporation.  All rights reserved.
  Copyright (c) 1996-1999 by Silicon Graphics.  All rights reserved.
- Copyright (c) 1999-2004 Hewlett-Packard Development Company, L.P.
- 
- The file linux_threads.c is also
  Copyright (c) 1998 by Fergus Henderson.  All rights reserved.
+ Copyright (c) 1999-2001 by Red Hat, Inc.  All rights reserved.
+ Copyright (c) 1999-2011 Hewlett-Packard Development Company, L.P.
+ Copyright (c) 2004-2005 Andrei Polushin
+ Copyright (c) 2007 Free Software Foundation, Inc.
+ Copyright (c) 2008-2022 Ivan Maidanski
+ Copyright (c) 2011 Ludovic Courtes
+ Copyright (c) 2018 Petter A. Urkedal
  
- The files Makefile.am, and configure.in are
- Copyright (c) 2001 by Red Hat Inc. All rights reserved.
- 
- Several files supporting GNU-style builds are copyrighted by the Free
- Software Foundation, and carry a different license from that given
- below.
  
  THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED
  OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
  
  Permission is hereby granted to use or copy this program
- for any purpose,  provided the above notices are retained on all copies.
+ for any purpose, provided the above notices are retained on all copies.
  Permission to modify the code and to distribute modified code is granted,
  provided the above notices are retained, and a notice that the code was
  modified is included with the above copyright notice.
  
+ 
+ Several files (gc/gc_allocator.h, extra/msvc_dbg.c) come with slightly
+ different licenses, though they are all similar in spirit (the exact
+ licensing terms are given at the beginning of the corresponding source file).
+ 
  A few of the files needed to use the GNU-style build procedure come with
- slightly different licenses, though they are all similar in spirit.  A few
- are GPL'ed, but with an exception that should cover all uses in the
- collector.  (If you are concerned about such things, I recommend you look
- at the notice in config.guess or ltmain.sh.)
+ a modified GPL license that appears not to significantly restrict use of
+ the collector, though use of those files for a purpose other than building
+ the collector may require the resulting code to be covered by the GPL.
 
 .. _`pre-translated headers page`: https://github.com/ytomino/boehmgc-ada/wiki/Pre-translated-headers
