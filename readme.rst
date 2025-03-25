@@ -12,9 +12,9 @@ Prerequisites
 GCC >= 4.7
  https://gcc.gnu.org/
 Boehm-Demers-Weiser Garbage Collector >= 7.2
- http://www.hboehm.info/gc/
+ https://www.hboehm.info/gc/
 headmaster
- http://github.com/ytomino/headmaster
+ https://github.com/ytomino/headmaster
 
 Usage
 -----
