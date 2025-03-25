@@ -11,7 +11,7 @@ Prerequisites
 
 GCC >= 4.7
  https://gcc.gnu.org/
-Boehm GC >= 6.8
+Boehm GC >= 7.2
  http://www.hboehm.info/gc/
 headmaster
  http://github.com/ytomino/headmaster
