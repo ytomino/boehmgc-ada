@@ -9,7 +9,7 @@ Ada binding to the Boehm-Demers-Weiser Garbage Collector.
 Prerequisites
 -------------
 
-GCC >= 4.7
+GCC >= 6
  https://gcc.gnu.org/
 Boehm-Demers-Weiser Garbage Collector >= 7.2
  https://www.hboehm.info/gc/
