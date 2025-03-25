@@ -64,7 +64,7 @@ Also, please apply the license of Boehm GC when static linking.
 
 **license of boehmgc-ada** ::
 
- Copyright 2010-2021 YT. All rights reserved.
+ Copyright 2010-2025 YT. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
