@@ -78,7 +78,7 @@ $(BUILDDIR)/%: %.adb $(wildcard $(SOURCEDIR)/*) | $(BUILDDIR) $(IMPORTDIR)
 	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c $< $(GARGS) $(MARGS) -cargs $(CARGS)
 	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) \
 		$(basename $(notdir $<)).ali $(GARGS) $(BARGS)
-	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o ../$@ \
+	cd $(BUILDDIR) && $(GCCPREFIX)gnatlink$(GCCSUFFIX) -o $(@F) \
 		$(basename $(notdir $<)).ali $(GARGS) $(LARGS)
 
 $(BUILDDIR):
