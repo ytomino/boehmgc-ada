@@ -19,6 +19,8 @@ headmaster
 Usage
 -----
 
+.. role:: path(emphasis)
+
 1. Prepare the translated headers.
 
    A. Translate the C headers with headmaster. ::
@@ -30,17 +32,17 @@ Usage
 
    B. Download them from `pre-translated headers page`_.
 
-2. Add the source directories of boehmgc-ada and the translated headers
-   to search path for gnatmake. ::
+2. Add the source directories of boehmgc-ada and the translated headers to
+   search path for gnatmake. ::
 
     $ gnatmake -Iboehmgc-ada/source -Iimport-dir your_main.adb
    
-   Or please write .gpr file for your environment.
+   Or please write :path:`.gpr` file for your environment.
 
 Build examples
 --------------
 
-1. Link the translated headers to `examples/import`. ::
+1. Link the translated headers to :path:`examples/import`. ::
 
     $ mkdir boehmgc-ada/examples/import
     $ ln -s $PWD/import-dir boehmgc-ada/examples/import/$(gcc -dumpmachine)
@@ -123,4 +125,5 @@ static linking.
  the collector, though use of those files for a purpose other than building
  the collector may require the resulting code to be covered by the GPL.
 
-.. _`pre-translated headers page`: https://github.com/ytomino/boehmgc-ada/wiki/Pre-translated-headers
+.. _`pre-translated headers page`:
+   https://github.com/ytomino/boehmgc-ada/wiki/Pre-translated-headers
