@@ -1,11 +1,12 @@
-SOURCEDIR=../source
-
-HOST:=$(shell gcc -dumpmachine)
+BUILD:=$(shell gcc -dumpmachine)
+HOST=$(BUILD)
 TARGET=$(HOST)
+
+SOURCEDIR=../source
 
 BUILDDIR=$(TARGET).noindex
 
-ifneq ($(TARGET),$(HOST))
+ifneq ($(TARGET),$(BUILD))
  GCCPREFIX=$(TARGET)-
  BINLN=
 else
@@ -20,7 +21,7 @@ CFLAGS_ADA=-gnata -gnatef -gnatwa -gnatyy-3bchms
 LDFLAGS=-ggdb
 HFLAGS=
 
-ifneq ($(TARGET),$(HOST))
+ifneq ($(TARGET),$(BUILD))
  ifneq ($(findstring freebsd,$(TARGET)),)
   LDFLAGS+=-lgc -lpthread
  endif
