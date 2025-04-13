@@ -75,7 +75,7 @@ EXAMPLES=$(basename $(filter-out b~%,$(wildcard *.adb)))
 
 all: $(EXAMPLES)
 
-$(BUILDDIR)/%: %.adb $(wildcard $(SOURCEDIR)/*) | $(BUILDDIR) $(IMPORTDIR)
+$(BUILDDIR)/%: %.adb $(SOURCEDIR)/* | $(BUILDDIR) $(IMPORTDIR)
 	$(GCCPREFIX)gnatmake$(GCCSUFFIX) -c $< $(GARGS) $(MARGS) -cargs $(CARGS)
 	cd $(BUILDDIR) && $(GCCPREFIX)gnatbind$(GCCSUFFIX) \
 		$(basename $(notdir $<)).ali $(GARGS) $(BARGS)
